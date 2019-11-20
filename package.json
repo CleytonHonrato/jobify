@@ -11,5 +11,9 @@
     "job"
   ],
   "author": "Cleyton Honorato <honoraro55@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "ejs": "^2.7.4",
+    "express": "^4.17.1"
+  }
 }
