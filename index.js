@@ -1,6 +1,7 @@
 // const ejs = require("ejs");
 const express = require("express");
 const app = express();
+const bodyParser = require('body-parser')
 
 // conecção com db sqlite
 const sqlite = require("sqlite");
@@ -27,6 +28,7 @@ init();
 // template engine
 app.set("view engine", "ejs");
 app.use(express.static("public"));
+app.use(bodyParser.urlencoded({ extended: true }))
 
 app.get("/", async (req, res) => {
   const db = await dbConnection;
@@ -55,6 +57,48 @@ app.get("/vaga/:id", async (req, res) => {
     vaga
   });
 });
+
+app.get('/admin', (req, res) => {
+  res.render('admin/home')
+});
+
+app.get('/admin/vaga', async (req, res) => {
+  const db = await dbConnection;
+  const vagas = await db.all('select * from vagas')
+
+  res.render('admin/vaga', {
+    vagas
+  })
+});
+
+
+app.get('/admin/vaga/delete/:id', async (req, res) => {
+  const db = await dbConnection;
+  await db.run('delete from vagas where id = ' + req.params.id);
+
+  res.redirect('/admin/vaga');
+});
+
+app.get('/admin/vaga/nova', async (req, res) => {
+  const db = await dbConnection;
+  const categorias = db.all('select * from categorias')
+
+  res.render('admin/nova-vaga', {
+    categorias
+  })
+});
+
+app.post('/admin/vaga/nova', async (req, res) => {
+  const { titulo, descricao, categorias } = req.body;
+  const db = await dbConnection;
+  await db.run(
+    `insert into vagas(categoria, titulo, descricao) values(${categorias}, '${titulo}',
+    '${descricao}')`
+  );
+
+
+  res.redirect('/admin/vaga')
+})
 
 app.listen(3000, err => {
   if (err) {
