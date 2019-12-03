@@ -47,8 +47,13 @@ app.get("/", async (req, res) => {
   });
 });
 
-app.get("/vaga/:id", (req, res) => {
-  res.render("vaga");
+app.get("/vaga/:id", async (req, res) => {
+  const db = await dbConnection;
+
+  const vaga = await db.get('select * from vagas where id = ' + req.params.id)
+  res.render("vaga", {
+    vaga
+  });
 });
 
 app.listen(3000, err => {
