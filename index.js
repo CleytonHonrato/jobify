@@ -1,6 +1,8 @@
 // const ejs = require("ejs");
 const express = require("express");
 const app = express();
+
+// cara que vai entender o corpo da requisição
 const bodyParser = require('body-parser')
 
 // conecção com db sqlite
@@ -15,13 +17,6 @@ const init = async () => {
   await db.run(
     "create table if not exists vagas (id INTEGER PRIMARY KEY, categoria INTEGER, titulo TEXT, descricao TEXT);"
   );
-
-  // const vaga = "Marketing Digital (San Francisco)";
-  // const descricao = "Mais alguma coisa";
-  // await db.run(
-  //   `insert into vagas(categoria, titulo, descricao) values(2, '${vaga}',
-  //   '${descricao}')`
-  // );
 };
 init();
 
@@ -71,7 +66,9 @@ app.get('/admin/vaga', async (req, res) => {
   })
 });
 
-
+/**
+ * @description deleta uma vaga especifica
+ */
 app.get('/admin/vaga/delete/:id', async (req, res) => {
   const db = await dbConnection;
   await db.run('delete from vagas where id = ' + req.params.id);
@@ -81,7 +78,7 @@ app.get('/admin/vaga/delete/:id', async (req, res) => {
 
 app.get('/admin/vaga/nova', async (req, res) => {
   const db = await dbConnection;
-  const categorias = db.all('select * from categorias')
+  const categorias = await db.all('select * from categorias')
 
   res.render('admin/nova-vaga', {
     categorias
@@ -95,7 +92,6 @@ app.post('/admin/vaga/nova', async (req, res) => {
     `insert into vagas(categoria, titulo, descricao) values(${categorias}, '${titulo}',
     '${descricao}')`
   );
-
 
   res.redirect('/admin/vaga')
 })
