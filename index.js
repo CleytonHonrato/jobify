@@ -53,10 +53,16 @@ app.get("/vaga/:id", async (req, res) => {
   });
 });
 
+/**
+ * Admin
+ */
 app.get('/admin', (req, res) => {
   res.render('admin/home')
 });
 
+/**
+ * Vagas
+ */
 app.get('/admin/vaga', async (req, res) => {
   const db = await dbConnection;
   const vagas = await db.all('select * from vagas')
@@ -94,7 +100,26 @@ app.post('/admin/vaga/nova', async (req, res) => {
   );
 
   res.redirect('/admin/vaga')
-})
+});
+
+app.get('/admin/vaga/editar/:id', async (req, res) => {
+  const db = await dbConnection;
+  const categorias = await db.all('select * from categorias');
+  const vaga = await db.get('select * from vagas where id = ' + req.params.id)
+
+  res.render('admin/editar-vaga', { categorias, vaga })
+});
+
+app.post('/admin/vaga/editar/:id', async (req, res) => {
+  const { titulo, descricao, categorias } = req.body;
+  const { id } = req.params;
+  const db = await dbConnection;
+  await db.run(
+    `update vagas set categoria = ${categorias}, titulo = '${titulo}', descricao = '${descricao}' where id = ${id}`
+  );
+
+  res.redirect('/admin/editar')
+});
 
 app.listen(3000, err => {
   if (err) {
