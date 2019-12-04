@@ -73,6 +73,30 @@ app.get('/admin/vaga', async (req, res) => {
 });
 
 /**
+ * categorias
+ */
+app.get('/admin/categorias/categorias', async (req, res) => {
+  const db = await dbConnection;
+  const categorias = await db.all('select * from categorias')
+
+  res.render('admin/categorias/categorias', {
+    categorias
+  })
+});
+
+/**
+ * @description deleta uma categoria
+ */
+app.get('/admin/categorias/delete/:id', async (req, res) => {
+  const db = await dbConnection;
+  await db.run('delete from categorias where id = ' + req.params.id);
+
+  res.redirect('/admin/categorias');
+})
+
+
+
+/**
  * @description deleta uma vaga especifica
  */
 app.get('/admin/vaga/delete/:id', async (req, res) => {
@@ -81,6 +105,17 @@ app.get('/admin/vaga/delete/:id', async (req, res) => {
 
   res.redirect('/admin/vaga');
 });
+
+
+app.get('/admin/categorias/nova', async (req, res) => {
+  const db = await dbConnection;
+  const categorias = await db.all('select * from categorias')
+
+  res.render('admin/categorias/nova-categoria', {
+    categorias
+  })
+});
+
 
 app.get('/admin/vaga/nova', async (req, res) => {
   const db = await dbConnection;
