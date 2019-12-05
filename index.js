@@ -52,7 +52,10 @@ app.get("/", async (req, res) => {
 app.get("/vaga/:id", async (req, res) => {
   const db = await dbConnection;
 
+  // consulta da vaga referente ao id vindo por paramentro
   const vaga = await db.get("select * from vagas where id = " + req.params.id);
+
+  // passando para vaga as vagas
   res.render("vaga", {
     vaga
   });

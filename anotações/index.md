@@ -81,3 +81,20 @@ app.get("/", async (req, res) => {
   });
 });
 ```
+
+já exibindo as vagas e categorias na home basta passar o id da vaga para ser exibida na pagina de vagas
+
+```javascript
+app.get("/vaga/:id", async (req, res) => {
+  const db = await dbConnection;
+
+  const vaga = await db.get("select * from vagas where id = " + req.params.id);
+  res.render("vaga", {
+    vaga
+  });
+});
+```
+
+> obs: _/vaga/:id_ é a rota na qual vai passar o id e exibir na pagina de vagas
+
+Fazendo isso acabamos de criar 3 paginas do nosso site apenas por manipulação de dados.
