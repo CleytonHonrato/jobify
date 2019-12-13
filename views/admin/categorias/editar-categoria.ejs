@@ -1,18 +1,18 @@
 <%- include('../header') %>
 
 <h2>
-  Nova categoria |
+  Editar vaga |
   <a href="/admin/categorias/categorias">Categorias</a>
 </h2>
 <div>
   <form method="POST">
-    <label> Titulo da categoria: </label>
-    <input type="text" name='categorias'>
-
+    <label> Titulo da vaga: </label>
+    <input type="text" name='categorias' value="<%= cat.categoria%>">
     <br>
     <br>
+    <button>Salvar vagas</button>
 
-    <button>Salvar categoria</button>
+
   </form>
 </div>
 <%- include('../footer') %>

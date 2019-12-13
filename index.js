@@ -43,7 +43,6 @@ app.get("/", async (req, res) => {
       vagas: vagas.filter(vaga => vaga.categoria === cat.id)
     };
   });
-
   res.render("home", {
     categorias
   });
@@ -87,7 +86,7 @@ app.get("/admin/categorias/delete/:id", async (req, res) => {
   const db = await dbConnection;
   await db.run("delete from categorias where id = " + req.params.id);
 
-  res.redirect("/admin/categorias");
+  res.redirect("/admin/categorias/categorias");
 });
 
 app.get("/admin/categorias/nova", async (req, res) => {
@@ -102,9 +101,29 @@ app.get("/admin/categorias/nova", async (req, res) => {
 app.post("/admin/categorias/nova", async (req, res) => {
   const { categorias } = req.body;
   const db = await dbConnection;
-  await db.run(`insert into categorias(categoria) values(${categorias})`);
+  await db.run(`insert into categorias(categoria) values('${categorias}')`);
 
-  res.redirect("/admin/categorias");
+  res.redirect("/admin/categorias/categorias");
+});
+
+
+app.get("/admin/categorias/editar/:id", async (req, res) => {
+  const db = await dbConnection;
+  const categorias = await db.all("select * from categorias");
+  const cat = await db.get("select * from categorias where id = " + req.params.id);
+
+  res.render("admin/categorias/editar-categoria", { categorias, cat });
+});
+
+app.post("/admin/categorias/editar/:id", async (req, res) => {
+  const { categorias } = req.body;
+  const { id } = req.params;
+  const db = await dbConnection;
+  await db.run(
+    `update categorias set categoria = '${categorias}' where id = ${id}`
+  );
+
+  res.redirect("/admin/categorias/categorias");
 });
 
 /**
